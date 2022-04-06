@@ -4,38 +4,41 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
+	"github.com/sqlite-go/compiler"
 )
 
-type InputBuffer struct {
-	Buffer       string
-	BufferLength int
-	InputLength  int
-}
-
-func NewInputBuffer() InputBuffer {
-	newInputBuffer := InputBuffer{}
-	newInputBuffer.Buffer = ""
-	newInputBuffer.BufferLength = 16
-	newInputBuffer.InputLength = 16
-	return newInputBuffer
-}
-
 func main() {
-	inputBuffer := NewInputBuffer()
+	inputBuffer := compiler.NewInputBuffer()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		scanner.Scan()
 		command := scanner.Text()
 		inputBuffer.Buffer = command
-		if len(command) <= 1 {
-			fmt.Println("Error reading input")
+
+		if strings.HasPrefix(inputBuffer.Buffer, "."){
+			switch compiler.DoMetaCommand(inputBuffer){
+			case compiler.MetaCommandSuccess:
+				continue;
+			case compiler.MetaCommandUnrecognizedCommand:
+				fmt.Printf("Unrecognized command %s \n", inputBuffer.Buffer)
+				continue;
+			}}
+
+
+		var statement compiler.Statement
+			switch compiler.PrepareStatement(inputBuffer, &statement){
+			case compiler.PrepareSuccess:
+				
+			case compiler.PrepareUnrecognizedStatement:
+				fmt.Printf("Unrecognized command at start of %s \n", inputBuffer.Buffer)
+				continue;
 		}
 
-		if command == "exit()" && len(command) > 1{
-			os.Exit(0)
-		} else {
-			fmt.Printf("Unrecognized command '%s'.\n", inputBuffer.Buffer)
+		compiler.ExecuteStatement(statement)
+		fmt.Println("Executed")
+			
 		}
+		
 	}
-
-}
