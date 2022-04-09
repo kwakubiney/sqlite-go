@@ -2,7 +2,10 @@ package compiler
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
 type MetaCommandResult int
@@ -17,6 +20,7 @@ const (
 const (
 	PrepareSuccess PrepareResult = iota
 	PrepareUnrecognizedStatement
+	PrepareSyntaxError
 )
 
 const (
@@ -25,7 +29,8 @@ const (
 )
 
 type Statement struct {
-	Type StatementType
+	rowToInsert Row
+	Type        StatementType
 }
 
 func DoMetaCommand(buffer InputBuffer) MetaCommandResult {
@@ -39,10 +44,29 @@ func DoMetaCommand(buffer InputBuffer) MetaCommandResult {
 
 func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	if len(buffer.Buffer) > 6 {
-		if buffer.Buffer[:6] == "insert" {
-		statement.Type = StatementInsert
-		return PrepareSuccess
-	}
+		// bufferArguments contains a slice of arguments in buffer.Buffer separated by a space
+		bufferArguments := strings.Fields(buffer.Buffer)
+		if bufferArguments[0] == "insert" {
+			statement.Type = StatementInsert
+			if len(bufferArguments) < 4 {
+				return PrepareSyntaxError
+			} else {
+				i, err := strconv.Atoi(bufferArguments[1])
+				if err != nil {
+					log.Printf("%q is not a valid id\n", bufferArguments[1])
+					return PrepareSyntaxError
+				} else {
+					statement.rowToInsert.id = int32(i)
+				}
+				statement.rowToInsert.username = bufferArguments[2]
+				statement.rowToInsert.username = bufferArguments[3]
+			}
+			return PrepareSuccess
+		}
+		// if buffer.Buffer[:6] == "insert" {
+		// 	statement.Type = StatementInsert
+		// 	return PrepareSuccess
+		// }
 	}
 
 	if buffer.Buffer == "select" {
@@ -59,7 +83,6 @@ func ExecuteStatement(statement Statement) {
 		fmt.Println("This is where an insert will be done.")
 	case (StatementSelect):
 		fmt.Println("This is where a select will be done.")
-
 
 	}
 }
