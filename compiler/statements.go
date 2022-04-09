@@ -29,7 +29,7 @@ const (
 )
 
 type Statement struct {
-	rowToInsert Row
+	RowToInsert Row
 	Type        StatementType
 }
 
@@ -44,7 +44,6 @@ func DoMetaCommand(buffer InputBuffer) MetaCommandResult {
 
 func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	if len(buffer.Buffer) > 6 {
-		// bufferArguments contains a slice of arguments in buffer.Buffer separated by a space
 		bufferArguments := strings.Fields(buffer.Buffer)
 		if bufferArguments[0] == "insert" {
 			statement.Type = StatementInsert
@@ -56,17 +55,13 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 					log.Printf("%q is not a valid id\n", bufferArguments[1])
 					return PrepareSyntaxError
 				} else {
-					statement.rowToInsert.id = int32(i)
+					statement.RowToInsert.id = int32(i)
 				}
-				statement.rowToInsert.username = bufferArguments[2]
-				statement.rowToInsert.username = bufferArguments[3]
+				statement.RowToInsert.username = bufferArguments[2]
+				statement.RowToInsert.username = bufferArguments[3]
 			}
 			return PrepareSuccess
 		}
-		// if buffer.Buffer[:6] == "insert" {
-		// 	statement.Type = StatementInsert
-		// 	return PrepareSuccess
-		// }
 	}
 
 	if buffer.Buffer == "select" {

@@ -13,7 +13,7 @@ func main() {
 	inputBuffer := compiler.NewInputBuffer()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		printPrompt()
+		PrintPrompt()
 		scanner.Scan()
 		command := scanner.Text()
 		inputBuffer.Buffer = command
@@ -48,6 +48,6 @@ func main() {
 
 }
 
-func printPrompt() {
+func PrintPrompt() {
 	fmt.Printf("db > ")
 }
