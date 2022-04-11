@@ -7,9 +7,10 @@ import (
 )
 
 func SerializeRow(r []Row) {
-
+	log.Println(r)
 	encoder := gob.NewEncoder(&RowsTableBuffer)
 	err := encoder.Encode(r)
+	log.Println(RowsTableBuffer)
 	if err != nil {
 		log.Println("encode error:", err)
 	}
@@ -17,16 +18,12 @@ func SerializeRow(r []Row) {
 }
 
 func DeserializeRow() {
+	var rowsBuffer = RowsTableBuffer
 	rowsTable := make([]Row, 0)
-	log.Println(rowsTable)
-
-	decoder := gob.NewDecoder(&RowsTableBuffer)
-
+	decoder := gob.NewDecoder(&rowsBuffer)
 	err := decoder.Decode(&rowsTable)
 	if err != nil {
-		log.Println("encode error:", err)
+		log.Println("decode error:", err)
 	}
-	log.Println(len(rowsTable))
 	fmt.Println(rowsTable)
-	// fmt.Printf("%d %q %q\n", row.Id, row.Username, row.Email)
 }
