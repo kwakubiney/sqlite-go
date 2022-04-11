@@ -9,7 +9,7 @@ type InputBuffer struct {
 func NewInputBuffer() InputBuffer {
 	newInputBuffer := InputBuffer{}
 	newInputBuffer.Buffer = ""
-	newInputBuffer.BufferLength = 16
-	newInputBuffer.InputLength = 16
+	newInputBuffer.BufferLength = 0
+	newInputBuffer.InputLength = 0
 	return newInputBuffer
 }
