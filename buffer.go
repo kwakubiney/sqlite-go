@@ -1,4 +1,4 @@
-package compiler
+package sqlitego
 
 type InputBuffer struct {
 	Buffer       string
