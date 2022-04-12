@@ -6,6 +6,12 @@ import (
 	"log"
 )
 
+type Row struct {
+	ID       int32
+	Username string
+	Email    string
+}
+
 var (
 	encoder = gob.NewEncoder(&RowsTableBuffer)
 	decoder = gob.NewDecoder(&RowsTableBuffer)
