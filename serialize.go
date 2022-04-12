@@ -1,4 +1,4 @@
-package compiler
+package sqlitego
 
 import (
 	"encoding/gob"
@@ -22,11 +22,9 @@ func SerializeRow(r Row) {
 func DeserializeRow() {
 
 	var rows Row
-
 	err := decoder.Decode(&rows)
 
 	for err == nil {
-
 		if err != nil {
 			log.Println("decode error:", err)
 		}

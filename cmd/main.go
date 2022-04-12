@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/sqlite-go/compiler"
+	"github.com/sqlite-go"
 )
 
-func main() {
-	inputBuffer := compiler.NewInputBuffer()
+func main(){
+	inputBuffer := sqlitego.NewInputBuffer()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		PrintPrompt()
@@ -19,29 +18,29 @@ func main() {
 		inputBuffer.Buffer = command
 
 		if strings.HasPrefix(inputBuffer.Buffer, ".") {
-			switch compiler.DoMetaCommand(inputBuffer) {
-			case compiler.MetaCommandSuccess:
+			switch sqlitego.DoMetaCommand(inputBuffer) {
+			case sqlitego.MetaCommandSuccess:
 				continue
-			case compiler.MetaCommandUnrecognizedCommand:
+			case sqlitego.MetaCommandUnrecognizedCommand:
 				fmt.Printf("Unrecognized command %q \n", inputBuffer.Buffer)
 				continue
 			}
 		}
 
-		var statement compiler.Statement
-		switch compiler.PrepareStatement(inputBuffer, &statement) {
-		case compiler.PrepareSuccess:
+		var statement sqlitego.Statement
+		switch sqlitego.PrepareStatement(inputBuffer, &statement) {
+		case sqlitego.PrepareSuccess:
 
-		case compiler.PrepareUnrecognizedStatement:
+		case sqlitego.PrepareUnrecognizedStatement:
 			fmt.Printf("Unrecognized command at start of %q \n", inputBuffer.Buffer)
 			continue
 
-		case compiler.PrepareSyntaxError:
+		case sqlitego.PrepareSyntaxError:
 			fmt.Println("Syntax error. Could not parse statement.")
 			continue
 		}
 
-		compiler.ExecuteStatement(statement)
+		sqlitego.ExecuteStatement(statement)
 		fmt.Println("Executed")
 
 	}
