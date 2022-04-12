@@ -22,11 +22,9 @@ func SerializeRow(r Row) {
 	if err != nil {
 		log.Println("encode error:", err)
 	}
-
 }
 
 func DeserializeRow() {
-
 	var rows Row
 	err := decoder.Decode(&rows)
 
@@ -37,7 +35,5 @@ func DeserializeRow() {
 
 		fmt.Printf("%d %s %s\n", rows.ID, rows.Username, rows.Email)
 		err = decoder.Decode(&rows)
-
 	}
-
 }
