@@ -65,8 +65,7 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 				statement.RowToInsert.Username = bufferArguments[2]
 				statement.RowToInsert.Email = bufferArguments[3]
 			}
-			RowsTable = append(RowsTable, statement.RowToInsert)
-			log.Println(RowsTable)
+			// RowsTable = append(RowsTable, statement.RowToInsert)
 			return PrepareSuccess
 		}
 	}
@@ -82,7 +81,7 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 func ExecuteStatement(statement Statement) {
 	switch statement.Type {
 	case (StatementInsert):
-		SerializeRow(RowsTable)
+		SerializeRow(statement.RowToInsert)
 	case (StatementSelect):
 		DeserializeRow()
 	}

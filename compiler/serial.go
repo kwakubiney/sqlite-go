@@ -6,11 +6,13 @@ import (
 	"log"
 )
 
-func SerializeRow(r []Row) {
-	log.Println(r)
-	encoder := gob.NewEncoder(&RowsTableBuffer)
+var (
+	encoder = gob.NewEncoder(&RowsTableBuffer)
+	decoder = gob.NewDecoder(&RowsTableBuffer)
+)
+
+func SerializeRow(r Row) {
 	err := encoder.Encode(r)
-	log.Println(RowsTableBuffer)
 	if err != nil {
 		log.Println("encode error:", err)
 	}
@@ -18,12 +20,18 @@ func SerializeRow(r []Row) {
 }
 
 func DeserializeRow() {
-	var rowsBuffer = RowsTableBuffer
-	rowsTable := make([]Row, 0)
-	decoder := gob.NewDecoder(&rowsBuffer)
-	err := decoder.Decode(&rowsTable)
-	if err != nil {
-		log.Println("decode error:", err)
+
+	var rows Row
+
+	err := decoder.Decode(&rows)
+
+	for err == nil {
+		if err != nil {
+			log.Fatal("decode error:", err)
+		}
+		fmt.Printf("%d %s %s\n", rows.ID, rows.Username, rows.Email)
+		err = decoder.Decode(&rows)
+
 	}
-	fmt.Println(rowsTable)
+
 }
