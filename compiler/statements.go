@@ -65,7 +65,6 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 				statement.RowToInsert.Username = bufferArguments[2]
 				statement.RowToInsert.Email = bufferArguments[3]
 			}
-			// RowsTable = append(RowsTable, statement.RowToInsert)
 			return PrepareSuccess
 		}
 	}

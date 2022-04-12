@@ -26,9 +26,11 @@ func DeserializeRow() {
 	err := decoder.Decode(&rows)
 
 	for err == nil {
+
 		if err != nil {
-			log.Fatal("decode error:", err)
+			log.Println("decode error:", err)
 		}
+
 		fmt.Printf("%d %s %s\n", rows.ID, rows.Username, rows.Email)
 		err = decoder.Decode(&rows)
 
