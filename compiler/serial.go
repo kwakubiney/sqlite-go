@@ -1,33 +1,39 @@
 package compiler
 
 import (
-	"bytes"
 	"encoding/gob"
 	"fmt"
 	"log"
 )
 
-func SerializeRow(row *Row) {
-	log.Println("Encoding...")
+var (
+	encoder = gob.NewEncoder(&RowsTableBuffer)
+	decoder = gob.NewDecoder(&RowsTableBuffer)
+)
 
-	var inMemory bytes.Buffer
-
-	encoder := gob.NewEncoder(&inMemory)
-	err := encoder.Encode(row)
+func SerializeRow(r Row) {
+	err := encoder.Encode(r)
 	if err != nil {
 		log.Println("encode error:", err)
 	}
 
 }
 
-func DeserializeRow(row *Row) {
+func DeserializeRow() {
 
-	var inMemory bytes.Buffer
+	var rows Row
 
-	decoder := gob.NewDecoder(&inMemory)
-	err := decoder.Decode(&row)
-	if err != nil {
-		log.Println("decode error:", err)
+	err := decoder.Decode(&rows)
+
+	for err == nil {
+
+		if err != nil {
+			log.Println("decode error:", err)
+		}
+
+		fmt.Printf("%d %s %s\n", rows.ID, rows.Username, rows.Email)
+		err = decoder.Decode(&rows)
+
 	}
-	fmt.Printf("%d %q %q\n", row.id, row.username, row.email)
+
 }
