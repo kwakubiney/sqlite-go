@@ -2,6 +2,7 @@ package sqlitego
 
 import (
 	"bytes"
+	"encoding/gob"
 	"log"
 	"os"
 	"strconv"
@@ -77,11 +78,11 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	return PrepareUnrecognizedStatement
 }
 
-func ExecuteStatement(statement Statement) {
+func ExecuteStatement(statement Statement, encoder *gob.Encoder, decoder *gob.Decoder, db *DB) {
 	switch statement.Type {
 	case (StatementInsert):
-		SerializeRow(statement.RowToInsert)
+		SerializeRow(statement.RowToInsert, encoder, db)
 	case (StatementSelect):
-		DeserializeRow()
+		DeserializeRow(decoder, db)
 	}
 }

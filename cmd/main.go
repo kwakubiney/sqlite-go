@@ -3,14 +3,23 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
+
 	"github.com/sqlite-go"
 )
 
 func main(){
 	inputBuffer := sqlitego.NewInputBuffer()
 	scanner := bufio.NewScanner(os.Stdin)
+	db, err := sqlitego.DbOpen("db", 0644)
+	if err != nil{
+		log.Fatal(err)
+	}
+	encoder := sqlitego.NewEncoder(db)
+	decoder := sqlitego.NewDecoder(db)	
+	defer db.Close()
 	for {
 		PrintPrompt()
 		scanner.Scan()
@@ -28,7 +37,6 @@ func main(){
 			}
 		}
 
-		
 		switch sqlitego.PrepareStatement(inputBuffer, &statement) {
 		case sqlitego.PrepareSuccess:
 
@@ -41,10 +49,11 @@ func main(){
 			continue
 		}
 
-		sqlitego.ExecuteStatement(statement)
+		sqlitego.ExecuteStatement(statement, encoder, decoder, db )
 		fmt.Println("Executed")
 
 	}
+
 }
 
 func PrintPrompt() {
