@@ -1,35 +1,37 @@
 package sqlitego
 
 import (
-	"encoding/gob"
-	"fmt"
+	"encoding/binary"
+	"io"
 	"log"
+	"strings"
 )
 
+
 type Row struct {
-	ID       int32
+	ID       string
 	Username string
 	Email    string
 }
 
 
 
-func SerializeRow(r Row, encoder *gob.Encoder, db *DB) {
-	err := encoder.Encode(r)
+func SerializeRow(r Row, db *DB) {
+	var hdr [4]byte
+	arrayOfRowValues := make([]string, 3)
+	arrayOfRowValues[0], arrayOfRowValues[1], arrayOfRowValues[2] = string(r.ID), r.Username, r.Email
+	stringOfRowValues := strings.Join(arrayOfRowValues, ":")
+	binary.BigEndian.PutUint32(hdr[:], uint32(len(stringOfRowValues)))
+	WriteToIndexMap(db, r)
+	_, err := db.File.Write(hdr[:])
 	if err != nil {
-		log.Println("encode error:", err)
+			log.Println(err)
+	}
+	_, err = io.WriteString(db.File, stringOfRowValues)
+	if err != nil {
+			log.Println(err)
 	}
 }
 
-func DeserializeRow(decoder *gob.Decoder, db *DB){
-	var rows Row
-	db.File.Seek(0, 0)
-	err := decoder.Decode(&rows)
-	for err == nil {
-		if err != nil {
-			log.Println("decode error:", err)
-		}
-		fmt.Printf("%d %s %s\n", rows.ID, rows.Username, rows.Email)
-		err = decoder.Decode(&rows)
-	}
-}
+
+

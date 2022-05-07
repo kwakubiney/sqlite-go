@@ -2,7 +2,7 @@ package sqlitego
 
 import (
 	"bytes"
-	"encoding/gob"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -39,8 +39,9 @@ var (
 	RowsTableBuffer bytes.Buffer
 )
 
-func DoMetaCommand(buffer InputBuffer) MetaCommandResult {
+func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
 	if buffer.Buffer == ".exit" {
+		db.Close()
 		os.Exit(0)
 	} else {
 		return MetaCommandUnrecognizedCommand
@@ -61,7 +62,8 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 					log.Printf("%q is not a valid id\n", bufferArguments[1])
 					return PrepareSyntaxError
 				} else {
-					statement.RowToInsert.ID = int32(i)
+					statement.RowToInsert.ID = fmt.Sprint(i)
+					
 				}
 				statement.RowToInsert.Username = bufferArguments[2]
 				statement.RowToInsert.Email = bufferArguments[3]
@@ -78,11 +80,12 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	return PrepareUnrecognizedStatement
 }
 
-func ExecuteStatement(statement Statement, encoder *gob.Encoder, decoder *gob.Decoder, db *DB) {
+func ExecuteStatement(statement Statement, db *DB) {
 	switch statement.Type {
 	case (StatementInsert):
-		SerializeRow(statement.RowToInsert, encoder, db)
+		SerializeRow(statement.RowToInsert, db)
 	case (StatementSelect):
-		DeserializeRow(decoder, db)
+	
 	}
 }
+
