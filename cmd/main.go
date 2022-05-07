@@ -10,15 +10,13 @@ import (
 	"github.com/sqlite-go"
 )
 
-func main(){
+func main() {
 	inputBuffer := sqlitego.NewInputBuffer()
 	scanner := bufio.NewScanner(os.Stdin)
-	db, err := sqlitego.DbOpen("db", 0644)
-	if err != nil{
+	db, err := sqlitego.DbOpen("db", "index", 0644)
+	if err != nil {
 		log.Fatal(err)
 	}
-	encoder := sqlitego.NewEncoder(db)
-	decoder := sqlitego.NewDecoder(db)	
 	defer db.Close()
 	for {
 		PrintPrompt()
@@ -28,7 +26,7 @@ func main(){
 		var statement sqlitego.Statement
 
 		if strings.HasPrefix(inputBuffer.Buffer, ".") {
-			switch sqlitego.DoMetaCommand(inputBuffer) {
+			switch sqlitego.DoMetaCommand(inputBuffer, db) {
 			case sqlitego.MetaCommandSuccess:
 				continue
 			case sqlitego.MetaCommandUnrecognizedCommand:
@@ -49,7 +47,7 @@ func main(){
 			continue
 		}
 
-		sqlitego.ExecuteStatement(statement, encoder, decoder, db )
+		sqlitego.ExecuteStatement(statement, db)
 		fmt.Println("Executed")
 
 	}
