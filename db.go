@@ -6,14 +6,13 @@ import (
 )
 
 type DB struct {
-	File   *os.File
-	Path   string
-	Opened bool
-	IndexFilePath   string
-	IndexFile *os.File
-	Bucket map[string]int64
+	File          *os.File
+	Path          string
+	Opened        bool
+	IndexFilePath string
+	IndexFile     *os.File
+	Bucket        map[string]int64
 }
-
 
 func DbOpen(path string, indexFilePath string, mode os.FileMode) (*DB, error) {
 	var db = &DB{Opened: true}
@@ -74,5 +73,3 @@ func (db *DB) Close() error {
 	db.IndexFilePath = ""
 	return nil
 }
-
-

@@ -47,7 +47,11 @@ func main() {
 			continue
 		}
 
-		sqlitego.ExecuteStatement(statement, db)
+		err := sqlitego.ExecuteStatement(statement, db)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
 		fmt.Println("Executed")
 
 	}

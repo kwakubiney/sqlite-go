@@ -27,11 +27,13 @@ const (
 const (
 	StatementInsert StatementType = iota
 	StatementSelect
+	StatementSelectItem
 )
 
 type Statement struct {
 	RowToInsert Row
 	Type        StatementType
+	RowToSelect Row
 }
 
 var (
@@ -50,8 +52,8 @@ func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
 }
 
 func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
+	bufferArguments := strings.Fields(buffer.Buffer)
 	if len(buffer.Buffer) > 6 {
-		bufferArguments := strings.Fields(buffer.Buffer)
 		if bufferArguments[0] == "insert" {
 			statement.Type = StatementInsert
 			if len(bufferArguments) < 4 {
@@ -63,7 +65,7 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 					return PrepareSyntaxError
 				} else {
 					statement.RowToInsert.ID = fmt.Sprint(i)
-					
+
 				}
 				statement.RowToInsert.Username = bufferArguments[2]
 				statement.RowToInsert.Email = bufferArguments[3]
@@ -72,20 +74,37 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 		}
 	}
 
-	if buffer.Buffer == "select" {
+	if len(bufferArguments) == 1 && buffer.Buffer == "select" {
 		statement.Type = StatementSelect
 		return PrepareSuccess
 	}
 
+	if bufferArguments[0] == "select" {
+		statement.Type = StatementSelectItem
+		if len(bufferArguments) > 2 {
+			return PrepareSyntaxError
+		} else {
+			_, err := strconv.Atoi(bufferArguments[1])
+			if err != nil {
+				log.Printf("%q is not a valid id\n", bufferArguments[1])
+				return PrepareSyntaxError
+			}
+			statement.RowToSelect.ID = bufferArguments[1]
+			return PrepareSuccess
+		}
+	}
 	return PrepareUnrecognizedStatement
 }
 
-func ExecuteStatement(statement Statement, db *DB) {
+func ExecuteStatement(statement Statement, db *DB) error {
 	switch statement.Type {
 	case (StatementInsert):
-		SerializeRow(statement.RowToInsert, db)
+		return SerializeRow(statement.RowToInsert, db)
 	case (StatementSelect):
-	
-	}
-}
+		return DeserializeAllRows(db)
+	case (StatementSelectItem):
+		return DeserializeSpecificRow(db, statement.RowToSelect.ID)
 
+	}
+	return nil
+}
