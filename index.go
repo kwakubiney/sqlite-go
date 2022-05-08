@@ -1,12 +1,12 @@
 package sqlitego
 
 import (
-	"log"
 	"encoding/gob"
+	"log"
 	"os"
 )
 
-func WriteToIndexMap(db *DB, r Row){
+func WriteToIndexMap(db *DB, r Row) {
 	fileInfo, err := db.File.Stat()
 	if err != nil {
 		log.Println(err)
@@ -15,20 +15,17 @@ func WriteToIndexMap(db *DB, r Row){
 	db.Bucket[r.ID] = fileOffset
 }
 
-
-func WriteToIndexFile(db *DB){
+func WriteToIndexFile(db *DB) {
 	encoder := gob.NewEncoder(db.IndexFile)
 	encoder.Encode(db.Bucket)
 }
 
-
-func ReadMapFromIndexFile(db *DB){
-	db.Bucket = make(map[string]int64)
+func ReadMapFromIndexFile(db *DB) {
 	decoder := gob.NewDecoder(db.IndexFile)
 	decoder.Decode(&db.Bucket)
 }
 
-func RemoveIndexFile(db *DB){
+func RemoveIndexFile(db *DB) {
 	if err := os.Truncate(db.IndexFilePath, 0); err != nil {
 		log.Printf("failed to truncate: %v", err)
 	}
