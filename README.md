@@ -3,8 +3,7 @@ A naïve implementation of a persistent disk database using Golang.
 
 # Demo
 
-![ezgif-5-dc6eb5f6d1](https://user-images.githubusercontent.com/71296367/168181177-3a1e3945-e187-4817-8aff-8cd2a3c78f2b.gif)
-
+![Screen Recording 2022-05-12 at 10 56 25 PM](https://user-images.githubusercontent.com/71296367/168181665-d7616e13-2ca2-492b-a7c8-bf3376a077b4.gif)
 
 # How was it built?
 
