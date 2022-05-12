@@ -1,6 +1,11 @@
 # sqlite-go
 A naïve implementation of a persistent disk database using Golang.
 
+# Demo
+
+![ezgif-5-dc6eb5f6d1](https://user-images.githubusercontent.com/71296367/168181177-3a1e3945-e187-4817-8aff-8cd2a3c78f2b.gif)
+
+
 # How was it built?
 
 1) Basically, I utilize an append only file named `db` and an index file named `index` which gets created when the DB is opened by running `go run main.go`
