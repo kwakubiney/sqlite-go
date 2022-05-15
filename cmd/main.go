@@ -22,6 +22,7 @@ func main() {
 		PrintPrompt()
 		scanner.Scan()
 		command := scanner.Text()
+		fmt.Println(command)
 		inputBuffer.Buffer = command
 		var statement sqlitego.Statement
 
