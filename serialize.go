@@ -2,6 +2,7 @@ package sqlitego
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"log"
 	"strings"
@@ -18,6 +19,7 @@ func SerializeRow(r Row, db *DB) error {
 	arrayOfRowValues := make([]string, 3)
 	arrayOfRowValues[0], arrayOfRowValues[1], arrayOfRowValues[2] = string(r.ID), r.Username, r.Email
 	stringOfRowValues := strings.Join(arrayOfRowValues, ":")
+	fmt.Println(stringOfRowValues)
 	binary.BigEndian.PutUint32(hdr[:], uint32(len(stringOfRowValues)))
 	WriteToIndexMap(db, r)
 	_, err := db.File.Write(hdr[:])

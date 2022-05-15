@@ -53,6 +53,10 @@ func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
 
 func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	bufferArguments := strings.Fields(buffer.Buffer)
+	fmt.Println(bufferArguments)
+	if len(buffer.Buffer) < 6 {
+		return PrepareSyntaxError
+	}
 	if len(buffer.Buffer) > 6 {
 		if bufferArguments[0] == "insert" {
 			statement.Type = StatementInsert
@@ -103,8 +107,8 @@ func ExecuteStatement(statement Statement, db *DB) error {
 	case (StatementSelect):
 		return DeserializeAllRows(db)
 	case (StatementSelectItem):
-		return DeserializeSpecificRow(db, statement.RowToSelect.ID)
-
+		_, err := DeserializeSpecificRow(db, statement.RowToSelect.ID)
+		return err
 	}
 	return nil
 }
