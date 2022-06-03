@@ -11,13 +11,12 @@ func (db *DB) TestClose() error {
 		return nil
 	}
 	db.Opened = false
-	
+
 	RemoveIndexFile(db)
 	RemoveDBTestFile()
 
 	db.Path = ""
 	db.IndexFilePath = ""
-
 
 	if err := db.File.Close(); err != nil {
 		return fmt.Errorf("failed to close db: %s", err)

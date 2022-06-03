@@ -13,12 +13,15 @@ func NewDecoder(db *DB) *gob.Decoder {
 	return gob.NewDecoder(db.IndexFile)
 }
 
+//TODO: Make this a transaction
 func DeserializeAllRows(db *DB) error {
+	fmt.Println("happy to be here")
 	for k := range db.Bucket {
-		_, err := DeserializeSpecificRow(db, k)
+		row, err := DeserializeSpecificRow(db, k)
 		if err != nil {
 			return err
 		}
+		fmt.Println(row)
 	}
 	return nil
 }
@@ -56,5 +59,9 @@ func DeserializeSpecificRow(db *DB, id string) (string, error) {
 		return "", err
 	}
 	decodedRow := ParseDecodedRow(string(rowBuffer))
+	fmt.Println(decodedRow)
 	return decodedRow, err
 }
+
+
+
