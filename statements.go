@@ -53,7 +53,6 @@ func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
 
 func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	bufferArguments := strings.Fields(buffer.Buffer)
-	fmt.Println(bufferArguments)
 	if len(buffer.Buffer) < 6 {
 		return PrepareSyntaxError
 	}

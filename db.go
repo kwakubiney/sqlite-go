@@ -22,34 +22,33 @@ func DbOpen(path string, indexFilePath string, mode os.FileMode) (*DB, error) {
 	flag := os.O_RDWR
 	var err error
 	if db.File, err = os.OpenFile(db.Path, os.O_APPEND|flag|os.O_CREATE, mode); err != nil {
-		db.Close()
-		return nil, err
+		return nil, fmt.Errorf("error whilst opening file, %s", err)
 	}
 	if os.IsNotExist(err) {
 		fmt.Println("Creating new db file...")
 		createdFile, err := os.Create(path)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error whilst creating file, %s", err)
 		}
 		db.File = createdFile
 	}
 
 	if db.IndexFile, err = os.OpenFile(db.IndexFilePath, os.O_APPEND|flag|os.O_CREATE, mode); err != nil {
-		db.Close()
-		return nil, err
+		return nil, fmt.Errorf("error whilst opening index file, %s", err)
 	}
 	if os.IsNotExist(err) {
 		fmt.Println("Creating new index file...")
 		createdIndexFile, err := os.Create(path)
-		if err != nil {
-			return nil, err
-		}
 		db.IndexFile = createdIndexFile
+		if err != nil {
+			return nil, fmt.Errorf("error whilst creating index file, %s", err)
+		}
 	}
 	ReadMapFromIndexFile(db)
 	RemoveIndexFile(db)
 
 	return db, nil
+
 }
 
 func (db *DB) Close() error {

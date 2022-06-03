@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func SuccessfulTestSerializationAndDeserialization(t *testing.T) {
+func TestSerializationAndDeserialization(t *testing.T) {
 	type DeserializeCases struct {
 		Row              sqlitego.Row
 		ExpectedResponse string

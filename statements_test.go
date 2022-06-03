@@ -1,7 +1,7 @@
 package sqlitego_test
 
 import (
-	//"fmt"
+	"log"
 	"testing"
 
 	"github.com/sqlite-go"
@@ -30,7 +30,6 @@ func TestPrepareStatement(t *testing.T) {
 			},
 
 			sqlitego.Statement{},
-
 			sqlitego.PrepareSyntaxError,
 		},
 		{
@@ -44,5 +43,24 @@ func TestPrepareStatement(t *testing.T) {
 		actualResponse := sqlitego.PrepareStatement(buffer.Buffer, &buffer.Statement)
 		assert.Equal(t, buffer.Response, actualResponse)
 	}
+	db.TestClose()
+}
 
+func BenchmarkSerialization(b *testing.B) {
+	row := sqlitego.Row{
+		ID:       "5",
+		Username: "kwakubiney",
+		Email:    "k@mail.com",
+	}
+	for n := 0; n < b.N; n++ {
+		err := sqlitego.SerializeRow(row, db)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	err := db.TestClose()
+	if err != nil {
+		log.Println(err)
+	}
 }
