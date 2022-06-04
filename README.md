@@ -1,9 +1,5 @@
 # sqlite-go
-A naïve implementation of a persistent disk database using Golang.
-
-# Demo
-
-![Screen Recording 2022-05-12 at 10 56 25 PM](https://user-images.githubusercontent.com/71296367/168181665-d7616e13-2ca2-492b-a7c8-bf3376a077b4.gif)
+A naïve implementation of a file storage which can be served over REST and terminal `stdin`
 
 # How was it built?
 
@@ -17,35 +13,17 @@ A naïve implementation of a persistent disk database using Golang.
 1) I encode strings using the format `<ID>:<Name>:<Email>` along with their lengths (in `32` bits, `big endian` format) during a single insert.
 
 2) The encoded lengths help to seek through the file to read specific rows during a `select`
+
 # Why?
-To learn how disk based databases and indexes work.
+To learn the basics of serialization in disk databases and how indexes work.
 
-# How to use
-This database supports `insert` and `select` of rows with fields `ID, Name, Email`
+# How to use?
+Check out the API documentation.
 
-# How to do an insert
+# Flaws of this design
 
-`insert <ID> <Name> <Email>`
+1) There is no control on how large the DB file can grow.
+2) I use mutexes on the file to ensure one thread writes and reads at a time but atomicity is not guaranteed.
 
-`example` : `insert 1 Kwaku k@mail.com`
 
-# How to do a select of a specific row
-
-`select <ID>`
-
-`example` : `select 1`
-
-# How to do a select all rows
-
-`select`
-
-`example` : `select`
-
-# Things I will do in the future
-
-1) There is no control on how large the DB file can grow so compaction must be done to limit the growth.
-2) Implement `~4KB` paging to make DB reads on disk faster and more efficient.
-3) Concurrency and all the other cool stuff
-
-...when I understand them enough
    
