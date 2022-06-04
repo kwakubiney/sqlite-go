@@ -64,3 +64,4 @@ func BenchmarkSerialization(b *testing.B) {
 		log.Println(err)
 	}
 }
+

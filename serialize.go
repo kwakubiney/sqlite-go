@@ -14,12 +14,14 @@ type Row struct {
 }
 
 func SerializeRow(r Row, db *DB) error {
+	db.Mutex.Lock()
+	defer db.Mutex.Unlock()
 	var hdr [4]byte
 	arrayOfRowValues := make([]string, 3)
 	arrayOfRowValues[0], arrayOfRowValues[1], arrayOfRowValues[2] = string(r.ID), r.Username, r.Email
 	stringOfRowValues := strings.Join(arrayOfRowValues, ":")
 	binary.BigEndian.PutUint32(hdr[:], uint32(len(stringOfRowValues)))
-	WriteToIndexMap(db, r)
+	WriteToIndexMapWithoutLock(db, r)
 	_, err := db.File.Write(hdr[:])
 	if err != nil {
 		log.Println(err)

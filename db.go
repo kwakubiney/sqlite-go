@@ -3,6 +3,7 @@ package sqlitego
 import (
 	"fmt"
 	"os"
+	"sync"
 )
 
 type DB struct {
@@ -12,6 +13,7 @@ type DB struct {
 	IndexFilePath string
 	IndexFile     *os.File
 	Bucket        map[string]int64
+	Mutex         sync.Mutex
 }
 
 func DbOpen(path string, indexFilePath string, mode os.FileMode) (*DB, error) {

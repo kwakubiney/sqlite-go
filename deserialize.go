@@ -15,7 +15,8 @@ func NewDecoder(db *DB) *gob.Decoder {
 
 //TODO: Make this a transaction
 func DeserializeAllRows(db *DB) error {
-	fmt.Println("happy to be here")
+	db.Mutex.Lock()
+	defer db.Mutex.Unlock()
 	for k := range db.Bucket {
 		row, err := DeserializeSpecificRow(db, k)
 		if err != nil {
@@ -33,6 +34,8 @@ func ParseDecodedRow(row string) string {
 }
 
 func DeserializeSpecificRow(db *DB, id string) (string, error) {
+	db.Mutex.Lock()
+	defer db.Mutex.Unlock()
 	offsetOfRow, ok := db.Bucket[id]
 	if !ok {
 		return "", fmt.Errorf("no such row id: %s in the database", id)
@@ -62,6 +65,3 @@ func DeserializeSpecificRow(db *DB, id string) (string, error) {
 	fmt.Println(decodedRow)
 	return decodedRow, err
 }
-
-
-

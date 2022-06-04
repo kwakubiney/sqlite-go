@@ -4,9 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/sqlite-go"
 	"log"
 	"os"
+
+	"github.com/sqlite-go"
+	"github.com/sqlite-go/handlers"
+	"github.com/sqlite-go/server"
 )
 
 func PrintPrompt() {
@@ -17,15 +20,14 @@ func main() {
 	cmd := flag.String("cmd", "", "")
 	flag.Parse()
 	argument := *cmd
+	db, err := sqlitego.DbOpen("db", "index", 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 	if argument == "cli" {
 		inputBuffer := sqlitego.NewInputBuffer()
 		scanner := bufio.NewScanner(os.Stdin)
-
-		db, err := sqlitego.DbOpen("db", "index", 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
 		for {
 			PrintPrompt()
 			scanner.Scan()
@@ -39,11 +41,10 @@ func main() {
 		}
 
 	} else if argument == "http" {
-		return
+		handlers := handlers.New(db)
+		server := server.New(handlers)
+		server.Start()
 	} else {
 		fmt.Println("Unknown arguments. Refer to docs.")
 	}
-
-	
 }
-

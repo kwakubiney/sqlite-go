@@ -5,12 +5,16 @@ import (
 	"log"
 	"os"
 	"testing"
+	"github.com/gin-gonic/gin"
 
 	"github.com/sqlite-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/sqlite-go/handlers"
+	"github.com/sqlite-go/server"
 )
 
 var db *sqlitego.DB
+var routeHandlers *gin.Engine
 
 func TestMain(m *testing.M) {
 	var err error
@@ -18,6 +22,9 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Println(err)
 	}
+	handlers := handlers.New(db)
+	server := server.New(handlers)
+	routeHandlers = server.SetupRoutes()
 	os.Exit(m.Run())
 }
 
@@ -53,3 +60,5 @@ func TestSerializationAndDeserialization(t *testing.T) {
 
 	db.TestClose()
 }
+
+
