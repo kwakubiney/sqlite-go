@@ -1,51 +1,37 @@
-# sqlite-go
-A naïve implementation of a persistent disk database using Golang.
+# http-filedb
+A naïve implementation of a file storage which can be served over REST and terminal `stdin` solely for learning purposes and not for production.
 
-# Demo
+# How was the storage engine built?
 
-![Screen Recording 2022-05-12 at 10 56 25 PM](https://user-images.githubusercontent.com/71296367/168181665-d7616e13-2ca2-492b-a7c8-bf3376a077b4.gif)
-
-# How was it built?
-
-1) Basically, I utilize an append only file named `db` and an index file named `index` which gets created when the DB is opened by running `go run main.go`
+1) `http-filedb` uses an append only file and an index file.
 
 2) When inserts of rows are done, I maintain a `map` in memory to store the row `ID` as the key and the byte offset of the encoded row as the value for faster lookups during a `select`
 
 3) Index map is flushed to disk after the app is exited and loaded back in memory when the DB is up running again.
 
 # How was serialization done?
-1) I encode strings using the format `<ID>:<Name>:<Email>` along with their lengths (in `32` bits, `big endian` format) during a single insert.
+1) Data is stored using the format `<ID>:<Name>:<Email>` along with their lengths (in `32` bits, `big endian` format).
 
-2) The encoded lengths help to seek through the file to read specific rows during a `select`
+2) The encoded lengths help to seek through the file to read specific rows.
+
 # Why?
-To learn how disk based databases and indexes work.
+To learn the basics of serialization in disk databases, how indexes work and because I can.
 
-# How to use
-This database supports `insert` and `select` of rows with fields `ID, Name, Email`
+# How to use?
+Check out the API documentation.
 
-# How to do an insert
+# Flaws of this design
 
-`insert <ID> <Name> <Email>`
+1) There is no control on how large the DB file can grow.
+2) I use mutexes on the file to ensure one thread writes and reads at a time but atomicity is not guaranteed.
+3) i use a default schema for writes:
+```
+struct Row {
+    ID string
+    Username string
+    Email string
+}
+```
 
-`example` : `insert 1 Kwaku k@mail.com`
 
-# How to do a select of a specific row
-
-`select <ID>`
-
-`example` : `select 1`
-
-# How to do a select all rows
-
-`select`
-
-`example` : `select`
-
-# Things I will do in the future
-
-1) There is no control on how large the DB file can grow so compaction must be done to limit the growth.
-2) Implement `~4KB` paging to make DB reads on disk faster and more efficient.
-3) Concurrency and all the other cool stuff
-
-...when I understand them enough
    
