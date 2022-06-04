@@ -1,4 +1,4 @@
-# sqlite-go
+# http-filedb
 A naïve implementation of a file storage which can be served over REST and terminal `stdin`
 
 # How was it built?
