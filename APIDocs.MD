@@ -3,14 +3,14 @@
 - Run `go run cmd/main.go -cli` to have access to the `REPL` to type commands
 
 
-* To make an insert
+# To make an insert
 
-`insert <row_id> <username> <email>`
+- `insert <row_id> <username> <email>`
 
-* To make a select
+# To make a select
 
-`select` returns all rows
-`select <row_id>` returns row with selected ID
+- `select` returns all rows
+- `select <row_id>` returns row with selected ID
 
 
 # Development Usage (over REST endpoints)
