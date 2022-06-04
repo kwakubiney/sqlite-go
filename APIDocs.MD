@@ -47,7 +47,7 @@
     "message": "record has successfully been created"
 }
 ```
-# createUser
+# readUser
 
 **Request**
 + `GET /readUser/<userID>`
@@ -59,7 +59,9 @@
     "message": "record has successfully been read"
 }
 ```
+# readUsers
 
+**Request**
 + `GET /readUsers`
 
 **Response**
