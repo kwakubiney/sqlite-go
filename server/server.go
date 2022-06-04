@@ -25,8 +25,9 @@ func New(handler *handlers.Handler) *Server {
 }
 
 func (s *Server) SetupRoutes() *gin.Engine {
-	s.e.POST("/create", s.h.CreateUser)
-	s.e.GET("/read/:id", s.h.ReadUser)
+	s.e.POST("/createUser", s.h.CreateUser)
+	s.e.GET("/readUser/:id", s.h.ReadUser)
+	s.e.GET("/readUsers", s.h.ReadUsers)
 	return s.e
 }
 

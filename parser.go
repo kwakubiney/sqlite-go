@@ -29,7 +29,7 @@ func ParseAndExecuteStatement(inputBuffer InputBuffer, db *DB, statement Stateme
 		return nil
 	}
 
-	err := ExecuteStatement(statement, db)
+	_, err := ExecuteStatement(statement, db)
 	if err != nil {
 		log.Println(err)
 		return err

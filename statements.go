@@ -99,15 +99,15 @@ func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
 	return PrepareUnrecognizedStatement
 }
 
-func ExecuteStatement(statement Statement, db *DB) error {
+func ExecuteStatement(statement Statement, db *DB) ([]string, error){
 	switch statement.Type {
 	case (StatementInsert):
-		return SerializeRow(statement.RowToInsert, db)
+		return nil, SerializeRow(statement.RowToInsert, db)
 	case (StatementSelect):
 		return DeserializeAllRows(db)
 	case (StatementSelectItem):
 		_, err := DeserializeSpecificRow(db, statement.RowToSelect.ID)
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }

@@ -14,17 +14,16 @@ func NewDecoder(db *DB) *gob.Decoder {
 }
 
 //TODO: Make this a transaction
-func DeserializeAllRows(db *DB) error {
-	db.Mutex.Lock()
-	defer db.Mutex.Unlock()
+func DeserializeAllRows(db *DB) ([]string, error) {
+	var arrayOfRows []string
 	for k := range db.Bucket {
 		row, err := DeserializeSpecificRow(db, k)
+		arrayOfRows = append(arrayOfRows, row)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		fmt.Println(row)
 	}
-	return nil
+	return arrayOfRows, nil
 }
 
 func ParseDecodedRow(row string) string {
