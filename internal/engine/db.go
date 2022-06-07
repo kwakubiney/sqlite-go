@@ -1,4 +1,4 @@
-package sqlitego
+package engine
 
 import (
 	"fmt"

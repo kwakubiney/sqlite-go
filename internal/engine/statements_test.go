@@ -1,18 +1,18 @@
-package sqlitego_test
+package engine_test
 
 import (
 	"log"
 	"testing"
-
-	"github.com/sqlite-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/sqlite-go/internal/engine"
+	"github.com/sqlite-go"
 )
 
 func TestPrepareStatement(t *testing.T) {
 	type PrepareStatementTestSuite struct {
 		Buffer    sqlitego.InputBuffer
-		Statement sqlitego.Statement
-		Response  sqlitego.PrepareResult
+		Statement engine.Statement
+		Response  engine.PrepareResult
 	}
 	for _, buffer := range []PrepareStatementTestSuite{
 		{
@@ -20,46 +20,46 @@ func TestPrepareStatement(t *testing.T) {
 				Buffer: "insert 1 adam kwaku@mail.com",
 			},
 
-			sqlitego.Statement{},
+			engine.Statement{},
 
-			sqlitego.PrepareSuccess,
+			engine.PrepareSuccess,
 		},
 		{
 			sqlitego.InputBuffer{
 				Buffer: "insert adam kwaku kwaku@mail.com",
 			},
 
-			sqlitego.Statement{},
-			sqlitego.PrepareSyntaxError,
+			engine.Statement{},
+			engine.PrepareSyntaxError,
 		},
 		{
 			sqlitego.InputBuffer{
 				Buffer: "some random unrecognizable statement",
 			},
-			sqlitego.Statement{},
-			sqlitego.PrepareUnrecognizedStatement,
+			engine.Statement{},
+			engine.PrepareUnrecognizedStatement,
 		}} {
 
-		actualResponse := sqlitego.PrepareStatement(buffer.Buffer, &buffer.Statement)
+		actualResponse := engine.PrepareStatement(buffer.Buffer, &buffer.Statement)
 		assert.Equal(t, buffer.Response, actualResponse)
 	}
-	db.TestClose()
+	DB.TestClose()
 }
 
 func BenchmarkSerialization(b *testing.B) {
-	row := sqlitego.Row{
+	row := engine.Row{
 		ID:       "5",
 		Username: "kwakubiney",
 		Email:    "k@mail.com",
 	}
 	for n := 0; n < b.N; n++ {
-		err := sqlitego.SerializeRow(row, db)
+		err := engine.SerializeRow(row, DB)
 		if err != nil {
 			log.Fatalln(err)
 		}
 	}
 
-	err := db.TestClose()
+	err := DB.TestClose()
 	if err != nil {
 		log.Println(err)
 	}

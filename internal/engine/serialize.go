@@ -1,4 +1,4 @@
-package sqlitego
+package engine
 
 import (
 	"encoding/binary"
@@ -21,7 +21,7 @@ func SerializeRow(r Row, db *DB) error {
 	arrayOfRowValues[0], arrayOfRowValues[1], arrayOfRowValues[2] = string(r.ID), r.Username, r.Email
 	stringOfRowValues := strings.Join(arrayOfRowValues, ":")
 	binary.BigEndian.PutUint32(hdr[:], uint32(len(stringOfRowValues)))
-	WriteToIndexMapWithoutLock(db, r)
+	PushToIndexMapWithoutLock(db, r)
 	_, err := db.File.Write(hdr[:])
 	if err != nil {
 		log.Println(err)

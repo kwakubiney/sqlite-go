@@ -1,4 +1,4 @@
-package sqlitego
+package engine
 
 import (
 	"bytes"
@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+ "github.com/sqlite-go"
 )
 
 type MetaCommandResult int
@@ -41,7 +43,7 @@ var (
 	RowsTableBuffer bytes.Buffer
 )
 
-func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
+func DoMetaCommand(buffer sqlitego.InputBuffer, db *DB) MetaCommandResult {
 	if buffer.Buffer == ".exit" {
 		db.Close()
 		os.Exit(0)
@@ -51,7 +53,7 @@ func DoMetaCommand(buffer InputBuffer, db *DB) MetaCommandResult {
 	return MetaCommandSuccess
 }
 
-func PrepareStatement(buffer InputBuffer, statement *Statement) PrepareResult {
+func PrepareStatement(buffer sqlitego.InputBuffer, statement *Statement) PrepareResult {
 	bufferArguments := strings.Fields(buffer.Buffer)
 	if len(buffer.Buffer) < 6 {
 		return PrepareSyntaxError

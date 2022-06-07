@@ -2,7 +2,6 @@
 
 - Run `go run cmd/main.go -cli` to have access to the `REPL` to type commands
 
-
 * To make an insert
 
 `insert <row_id> <username> <email>`
@@ -14,6 +13,8 @@
 
 
 # Development Usage (over REST endpoints)
+
+- Set up port number in `.env` in root directory, as shown in `env-local`
 
 - Run `go run cmd/main.go -http` to run server
 

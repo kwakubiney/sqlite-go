@@ -1,47 +1,17 @@
-package sqlitego
+package handlers
 
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-func (db *DB) TestClose() error {
-	if !db.Opened {
-		return nil
-	}
-	db.Opened = false
-
-	RemoveIndexFile(db)
-	RemoveDBTestFile()
-
-	db.Path = ""
-	db.IndexFilePath = ""
-
-	if err := db.File.Close(); err != nil {
-		return fmt.Errorf("failed to close db: %s", err)
-	}
-
-	if err := db.IndexFile.Close(); err != nil {
-		return fmt.Errorf("failed to close index file: %s", err)
-	}
-
-	return nil
-}
-
-//TODO: This defeats DRY principle, have to create a general function to truncate files based on file names.
-func RemoveDBTestFile() {
-	if err := os.Truncate("test-db", 0); err != nil {
-		log.Printf("failed to truncate: %v", err)
-	}
-}
 
 func MakeTestRequest(t *testing.T, route string, body interface{}, method string) *http.Request {
 	reqBody, err := json.Marshal(body)
@@ -61,4 +31,10 @@ func BootstrapServer(req *http.Request, routeHandlers *gin.Engine) *httptest.Res
 	responseRecorder := httptest.NewRecorder()
 	routeHandlers.ServeHTTP(responseRecorder, req)
 	return responseRecorder
+}
+
+func DecodeResponse(t *testing.T, response *httptest.ResponseRecorder) map[string]interface{} {
+	var responseBody map[string]interface{}
+	assert.NoError(t, json.Unmarshal(response.Body.Bytes(), &responseBody))
+	return responseBody
 }

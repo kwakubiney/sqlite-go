@@ -1,12 +1,13 @@
-package sqlitego
+package engine
 
 import (
 	"fmt"
 	"log"
 	"strings"
+	"github.com/sqlite-go"
 )
 
-func ParseAndExecuteStatement(inputBuffer InputBuffer, db *DB, statement Statement) error {
+func ParseAndExecuteStatement(inputBuffer sqlitego.InputBuffer, db *DB, statement Statement) error {
 	if strings.HasPrefix(inputBuffer.Buffer, ".") {
 		switch DoMetaCommand(inputBuffer, db) {
 		case MetaCommandSuccess:

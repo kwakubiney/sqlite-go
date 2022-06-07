@@ -5,14 +5,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sqlite-go"
+	"github.com/sqlite-go/internal/engine"
 )
 
 func (h *Handler) ReadUser(c *gin.Context) {
 
 	id := c.Param("id")
 	if id == "" {
-		arrayOfRows, err := sqlitego.DeserializeAllRows(h.DB)
+		arrayOfRows, err := engine.DeserializeAllRows(h.DB)
 		if err != nil{
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "failed to read all user records",
@@ -28,7 +28,7 @@ func (h *Handler) ReadUser(c *gin.Context) {
 
 
 
-	row, err := sqlitego.DeserializeSpecificRow(h.DB, id)
+	row, err := engine.DeserializeSpecificRow(h.DB, id)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -46,7 +46,7 @@ func (h *Handler) ReadUser(c *gin.Context) {
 
 
 func (h *Handler) ReadUsers(c *gin.Context) {
-		arrayOfRows, err := sqlitego.DeserializeAllRows(h.DB)
+		arrayOfRows, err := engine.DeserializeAllRows(h.DB)
 		if err != nil{
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "failed to read all user records",

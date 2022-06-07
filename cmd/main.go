@@ -8,8 +8,10 @@ import (
 	"os"
 
 	"github.com/sqlite-go"
-	"github.com/sqlite-go/handlers"
-	"github.com/sqlite-go/server"
+	"github.com/sqlite-go/internal/config"
+	"github.com/sqlite-go/internal/engine"
+	"github.com/sqlite-go/internal/handlers"
+	"github.com/sqlite-go/internal/server"
 )
 
 func PrintPrompt() {
@@ -17,10 +19,12 @@ func PrintPrompt() {
 }
 
 func main() {
+
+	config.LoadMainConfig("../.env")
 	cmd := flag.String("cmd", "", "")
 	flag.Parse()
 	argument := *cmd
-	db, err := sqlitego.DbOpen("db", "index", 0644)
+	db, err := engine.DbOpen("../db", "../index", 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,8 +37,8 @@ func main() {
 			scanner.Scan()
 			command := scanner.Text()
 			inputBuffer.Buffer = command
-			var statement sqlitego.Statement
-			err := sqlitego.ParseAndExecuteStatement(inputBuffer, db, statement)
+			var statement engine.Statement
+			err := engine.ParseAndExecuteStatement(inputBuffer, db, statement)
 			if err != nil {
 				log.Fatal(err)
 			}

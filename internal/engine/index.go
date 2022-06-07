@@ -1,4 +1,4 @@
-package sqlitego
+package engine
 
 import (
 	"encoding/gob"
@@ -7,7 +7,7 @@ import (
 )
 
 
-func WriteToIndexMapWithoutLock(db *DB, r Row) {
+func PushToIndexMapWithoutLock(db *DB, r Row) {
 	fileInfo, err := db.File.Stat()
 	if err != nil {
 		log.Println(err)

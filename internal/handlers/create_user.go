@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sqlite-go"
+	"github.com/sqlite-go/internal/engine"
 )
 
 type CreateUserRequest struct {
@@ -25,13 +25,13 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		})
 	}
 
-	row := &sqlitego.Row{
+	row := &engine.Row{
 		ID:       cu.ID,
 		Username: cu.Username,
 		Email:    cu.Email,
 	}
 
-	err = sqlitego.SerializeRow(*row, h.DB)
+	err = engine.SerializeRow(*row, h.DB)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{

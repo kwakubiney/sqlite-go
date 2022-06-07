@@ -8,7 +8,7 @@ import (
 	"os/signal"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sqlite-go/handlers"
+	"github.com/sqlite-go/internal/handlers"
 )
 
 type Server struct {
@@ -34,7 +34,7 @@ func (s *Server) SetupRoutes() *gin.Engine {
 func (s *Server) Start() {
 
 	s.srv = http.Server{
-		Addr:    fmt.Sprintf(":%s", "8000"),
+		Addr:    fmt.Sprintf(":%s", os.Getenv("PORT")),
 		Handler: s.SetupRoutes(),
 	}
 
