@@ -13,7 +13,6 @@ func NewDecoder(db *DB) *gob.Decoder {
 	return gob.NewDecoder(db.IndexFile)
 }
 
-//TODO: Make this a transaction
 func DeserializeAllRows(db *DB) ([]string, error) {
 	var arrayOfRows []string
 	for k := range db.Bucket {

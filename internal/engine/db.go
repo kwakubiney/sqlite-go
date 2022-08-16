@@ -17,6 +17,7 @@ type DB struct {
 	Test          bool
 }
 
+
 func DbOpen(path string, indexFilePath string, mode os.FileMode, test string) (*DB, error) {
 	var db = &DB{Opened: true}
 	db.Bucket = make(map[string]int64)
@@ -91,3 +92,5 @@ func (db *DB) Close() error {
 	db.IndexFilePath = ""
 	return nil
 }
+
+

@@ -17,9 +17,6 @@ A naïve implementation of a file storage which can be served over REST and term
 # Why?
 To learn the basics of serialization in disk databases, how indexes work and because I can.
 
-# How to use?
-Check out the API documentation.
-
 # Flaws of this design
 
 1) There is no control on how large the DB file can grow.

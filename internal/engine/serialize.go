@@ -35,3 +35,5 @@ func SerializeRow(r Row, db *DB) error {
 	return nil
 }
 
+func SerializeRowToBytes()
+
